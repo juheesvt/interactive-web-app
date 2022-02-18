@@ -1,11 +1,18 @@
 import './App.css';
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {DndProvider, useDrag, useDrop} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 
-const MovableItem = ({name, setItems, dataType}) => {
+const MovableItem = ({name, setItems, dataType, result, setResult}) => {
 
     const changeItemColumn = (currentItem, columnName) => {
+        if(columnName === '함수 슬롯'){
+            setResult(eval(currentItem.name)(result))
+        } else if(columnName === '데이터 슬롯'){
+            console.log(currentItem)
+            setResult(result+currentItem.name)
+        }
+
         setItems((prevState) => {
             return prevState.map(e => {
                 return {
@@ -60,12 +67,8 @@ const Slot = ({title, children, className, dataType}) => {
     )
 }
 
-const toUpperCase = (items, setItems,) => {
-    setItems((prevItem) => {
-        return {
-            name: items.name.toUpperCase()
-        }
-    })
+const toUpperCase = (result) => {
+    return result.toUpperCase()
 }
 
 // function wordNum = your_string.split(' ').length;
@@ -73,28 +76,39 @@ const toUpperCase = (items, setItems,) => {
 // function reverse = your_string.split('').reverse().join('');
 
 function App() {
-
+    const [result, setResult] = useState('')
     const [items, setItems] = useState([
         {id: 1, name: "Smarter alone, Smartest together", column: "Data Blocks", type: "data"},
         {id: 2, name: "Make AI work for the rest of us", column: "Data Blocks", type: "data"},
         {id: 3, name: "toUpperCase", column: "Function Blocks", type: "function"},
         {id: 4, name: "wordNum", column: "Function Blocks", type: "function"},
         {id: 5, name: "reverse", column: "Function Blocks", type: "function"},
+        {id: 0, name: "" , column: "결과 슬롯", type: "result"}
     ]);
 
     const returnItemsForSlot = (columnName) => {
         return items
             .filter((item) => item.column === columnName)
             .map((item) => (
-                <MovableItem key={item.id} name={item.name} setItems={setItems} dataType={item.type}/>
+                <MovableItem key={item.id} name={item.name} setItems={setItems} dataType={item.type} result={result} setResult={setResult}/>
             ))
     }
 
+    const runClick = () => {
+        setItems((prevState) => {
+            return prevState.map(e => {
+                return {
+                    ...e,
+                    name: e.id === 0 ? result : e.name,
+                }
+            })
+        });
+    }
 
     return (
         <div>
             <div className="navigation">
-                <button className="run-btn" onClic={null}>
+                <button className="run-btn" onClick={runClick}>
                     실행하기
                 </button>
             </div>
@@ -119,6 +133,7 @@ function App() {
                             </Slot>
                             <Slot title={"결과 슬롯"} className={"column"} dataType={"result"}>
                                 {returnItemsForSlot("결과 슬롯")}
+
                             </Slot>
                         </div>
                     </DndProvider>
