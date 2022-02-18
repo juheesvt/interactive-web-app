@@ -1,24 +1,22 @@
 import './App.css';
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {DndProvider, useDrag, useDrop} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 
 const DeleteBtn = ({id, items, setItems}) => {
     const deleteItem = () => {
-    //     setItems((item) => {
-    //         console.log("삐용")
-    //             console.log(id)
-    //             // .filter(item.id === id)
-    //             // .map(e => {
-    //             //     return {
-    //             //         ...e,
-    //             //         column: id < 2 ? "Data Blocks" : (id < 100 ? "Function Blocks" : "결과 슬롯")
-    //             //     }
-    //             // })
-    //     })
+        setItems(() => {
+            return items
+                .filter((item) => (item.id === eval(id)))
+                .map(e => {
+                    {console.log(id, e)}
+                    return {
+                        ...e,
+                        column: id < 2 ? "Data Blocks" : (id < 100 ? "Function Blocks" : "결과 슬롯")
+                    }
+                })
+        })
     }
-
-
 
     return (
         <div className={"delete-btn"}>
@@ -93,8 +91,8 @@ const Slot = ({items, setItems, title, children, className, dataType}) => {
 
             {((children.length === 1 && (title === "데이터 슬롯" || title === "함수 슬롯")) &&
                 (title !== "결과 슬롯") &&
-                (title !== "Data Blocks" || title !== "Function Blocks")) && <DeleteBtn id = {children.id} items={items} setItems={setItems}/>}
-            {/*{console.log("--", children[0].props.name)}*/}
+                (title !== "Data Blocks" || title !== "Function Blocks")) && <DeleteBtn id = {children[0].key} items={items} setItems={setItems}/>}
+            {/*{console.log("--", children[0].key)}*/}
             {children}
         </div>
     )
