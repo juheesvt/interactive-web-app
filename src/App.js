@@ -10,7 +10,7 @@ const MovableItem = ({name, setItems, dataType, result, setResult}) => {
             setResult(eval(currentItem.name)(result))
         } else if(columnName === '데이터 슬롯'){
             console.log(currentItem)
-            setResult(result+currentItem.name)
+            setResult(currentItem.name)
         }
 
         setItems((prevState) => {
@@ -56,7 +56,9 @@ const MovableItem = ({name, setItems, dataType, result, setResult}) => {
 const Slot = ({title, children, className, dataType}) => {
     const [, drop] = useDrop({
         accept: dataType,
-        drop: () => ({name: title}),
+        drop: () => (
+            {name: title}
+        ),
     });
 
     return (
