@@ -15,6 +15,12 @@
   font-weight: bold;
 }
 
+.delete-btn button {
+  color: black;
+  border: none;
+  background: none;
+
+}
 .run-btn:hover {
   box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.5)
 }

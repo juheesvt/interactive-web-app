@@ -3,13 +3,20 @@ import React, {useEffect, useState} from "react";
 import {DndProvider, useDrag, useDrop} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 
+const DeleteBtn = () => {
+    return (
+        <div className={"delete-btn"}>
+            <button>x</button>
+        </div>
+    )
+}
+
 const MovableItem = ({name, setItems, dataType, result, setResult}) => {
 
     const changeItemColumn = (currentItem, columnName) => {
-        if(columnName === '함수 슬롯'){
+        if (columnName === '함수 슬롯') {
             setResult(eval(currentItem.name)(result))
-        } else if(columnName === '데이터 슬롯'){
-            console.log(currentItem)
+        } else if (columnName === '데이터 슬롯') {
             setResult(currentItem.name)
         }
 
@@ -29,9 +36,6 @@ const MovableItem = ({name, setItems, dataType, result, setResult}) => {
         type: dataType,
         end: (item, monitor) => {
             const dropResult = monitor.getDropResult();
-
-            console.log(dropResult)
-            console.log(item)
 
             if (dropResult && dropResult.name === "데이터 슬롯") {
                 changeItemColumn(item, "데이터 슬롯")
@@ -63,7 +67,14 @@ const Slot = ({title, children, className, dataType}) => {
 
     return (
         <div ref={drop} className={className}>
-            {title}
+            {/* eslint-disable-next-line no-restricted-globals */}
+            {((children.length === 0 && (title === "데이터 슬롯" || title === "함수 슬롯")) ||
+                    (title === "결과 슬롯" && children.name === "") ||
+                    (title === "Data Blocks" || title === "Function Blocks"))
+                && title}
+            {((children.length === 1 && (title === "데이터 슬롯" || title === "함수 슬롯")) &&
+                (title !== "결과 슬롯") &&
+                (title !== "Data Blocks" || title !== "Function Blocks")) && <DeleteBtn/>}
             {children}
         </div>
     )
@@ -85,14 +96,15 @@ function App() {
         {id: 3, name: "toUpperCase", column: "Function Blocks", type: "function"},
         {id: 4, name: "wordNum", column: "Function Blocks", type: "function"},
         {id: 5, name: "reverse", column: "Function Blocks", type: "function"},
-        {id: 0, name: "" , column: "결과 슬롯", type: "result"}
+        {id: 0, name: "", column: "결과 슬롯", type: "result"}
     ]);
 
     const returnItemsForSlot = (columnName) => {
         return items
             .filter((item) => item.column === columnName)
             .map((item) => (
-                <MovableItem key={item.id} name={item.name} setItems={setItems} dataType={item.type} result={result} setResult={setResult}/>
+                <MovableItem key={item.id} name={item.name} setItems={setItems} dataType={item.type}
+                             result={result} setResult={setResult}/>
             ))
     }
 
