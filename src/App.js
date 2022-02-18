@@ -11,7 +11,7 @@ const DeleteBtn = () => {
     )
 }
 
-const MovableItem = ({name, setItems, dataType, result, setResult, className}) => {
+const MovableItem = ({name, setItems, dataType, result, setResult, className, setClassName}) => {
 
     const changeItemColumn = (currentItem, columnName) => {
         if (columnName === '함수 슬롯') {
@@ -46,12 +46,13 @@ const MovableItem = ({name, setItems, dataType, result, setResult, className}) =
         collect: (monitor) => ({
             isDragging: monitor.isDragging(),
         }),
+
     });
 
     const opacity = isDragging ? 0.4 : 1;
 
     return (
-        <div ref={drag} className={"className"} style={{opacity}}>
+        <div ref={drag} className={className} style={{opacity}}>
             {name}
         </div>
     )
@@ -93,6 +94,7 @@ const reverse = (result) => {
 }
 
 function App() {
+    const [className, setClassName] = useState("movable-item")
     const [result, setResult] = useState('')
     const [items, setItems] = useState([
         {id: 1, name: "Smarter alone, Smartest together", column: "Data Blocks", type: "data"},
@@ -135,22 +137,22 @@ function App() {
                     <DndProvider backend={HTML5Backend}>
                         <div className={"first-column"}>
                             <Slot title={"Data Blocks"} className={"list"} dataType={"everybody"}>
-                                {returnItemsForSlot("Data Blocks", "movable-item")}
+                                {returnItemsForSlot("Data Blocks", {className})}
                             </Slot>
 
                             <Slot title={"Function Blocks"} className={"list"} dataType={"everybody"}>
-                                {returnItemsForSlot("Function Blocks","movable-item")}
+                                {returnItemsForSlot("Function Blocks",{className})}
                             </Slot>
                         </div>
                         <div className="slot">
                             <Slot title={"데이터 슬롯"} className={"column"} dataType={"data"}>
-                                {returnItemsForSlot("데이터 슬롯","movable-item")}
+                                {returnItemsForSlot("데이터 슬롯",{className})}
                             </Slot>
                             <Slot title={"함수 슬롯"} className={"column"} dataType={"function"}>
-                                {returnItemsForSlot("함수 슬롯","movable-item")}
+                                {returnItemsForSlot("함수 슬롯",{className})}
                             </Slot>
                             <Slot title={"결과 슬롯"} className={"column"} dataType={"result"}>
-                                {returnItemsForSlot("결과 슬롯","movable-item")}
+                                {returnItemsForSlot("결과 슬롯",{className})}
 
                             </Slot>
                         </div>
