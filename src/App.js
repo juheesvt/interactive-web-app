@@ -51,11 +51,13 @@ const MovableItem = ({name, setItems, dataType, setIsDataSlotEmpty, setIsFuncSlo
 
             if (dropResult && dropResult.name === "데이터 슬롯" && !isDataSlotEmpty) {
                 setIsDataSlotEmpty(item.name)
+
                 changeItemColumn(item, "데이터 슬롯")
             } else if (dropResult && dropResult.name === "함수 슬롯" && !isFuncSlotEmpty) {
                 setIsFuncSlotEmpty(item.name)
                 changeItemColumn(item, "함수 슬롯")
             }
+
         },
         collect: (monitor) => ({
             isDragging: monitor.isDragging(),
@@ -78,7 +80,7 @@ const Slot = ({items, setItems, title, children, className, dataType}) => {
         accept: dataType,
         drop: () => (
             {name: title}
-        ),
+        )
     });
 
 
@@ -86,14 +88,13 @@ const Slot = ({items, setItems, title, children, className, dataType}) => {
         <div ref={drop} className={className}>
 
             {((children.length === 0 && (title === "데이터 슬롯" || title === "함수 슬롯")) ||
-                    (title === "결과 슬롯" && children.name === " ") ||
-                    (title === "Data Blocks" || title === "Function Blocks"))
-                && title}
+                    (title === "결과 슬롯" && ( children[0].props.name === null)) ||
+                    (title === "Data Blocks" || title === "Function Blocks")) && title}
 
             {((children.length === 1 && (title === "데이터 슬롯" || title === "함수 슬롯")) &&
                 (title !== "결과 슬롯") &&
                 (title !== "Data Blocks" || title !== "Function Blocks")) && <DeleteBtn id = {children.id} items={items} setItems={setItems}/>}
-            {console.log("--", children[0])}
+            {/*{console.log("--", children[0].props.name)}*/}
             {children}
         </div>
     )
@@ -121,7 +122,7 @@ function App() {
         {id: 3, name: "toUpperCase", column: "Function Blocks", type: "function"},
         {id: 4, name: "wordNum", column: "Function Blocks", type: "function"},
         {id: 5, name: "reverse", column: "Function Blocks", type: "function"},
-        {id: 100, name: " ", column: "결과 슬롯", type: "result"}
+        {id: 100, name: null, column: "결과 슬롯", type: "result"}
     ]);
 
     const returnItemsForSlot = (columnName, className) => {
