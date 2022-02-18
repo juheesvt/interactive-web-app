@@ -84,9 +84,13 @@ const toUpperCase = (result) => {
     return result.toUpperCase()
 }
 
-// function wordNum = your_string.split(' ').length;
-//
-// function reverse = your_string.split('').reverse().join('');
+const wordNum = (result) => {
+    return result.split(' ').length;
+}
+
+const reverse = (result) => {
+    return result.split('').reverse().join('');
+}
 
 function App() {
     const [result, setResult] = useState('')
