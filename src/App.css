@@ -65,15 +65,23 @@
   margin-bottom: 20px;
 }
 
+div {
+  vertical-align: middle !important;
+  horiz-align: center !important;
+}
 .movable-item {
   margin-top: 15px;
   border-radius: 10px;
-  background-color: cornflowerblue;
-  height: 80px;
+  background-color: white;
+  height: auto;
   width: 170px;
+  padding: 10px 20px;
   justify-content: center;
   align-items: center;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
   text-align: center;
-  vertical-align: center;
+}
+
+.result-item {
+  border: none;
 }
