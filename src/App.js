@@ -4,19 +4,18 @@ import {DndProvider, useDrag, useDrop} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 
 const DeleteBtn = ({id, items, setItems}) => {
-
-
     const deleteItem = () => {
-        setItems((item) => {
-            return item
-                .filter(items.id === id)
-                .map(e => {
-                    return {
-                        ...e,
-                        column: id < 2 ? "Data Blocks" : (id < 100 ? "Function Blocks" : "결과 슬롯")
-                }
-                })
-        })
+    //     setItems((item) => {
+    //         console.log("삐용")
+    //             console.log(id)
+    //             // .filter(item.id === id)
+    //             // .map(e => {
+    //             //     return {
+    //             //         ...e,
+    //             //         column: id < 2 ? "Data Blocks" : (id < 100 ? "Function Blocks" : "결과 슬롯")
+    //             //     }
+    //             // })
+    //     })
     }
 
 
@@ -28,15 +27,10 @@ const DeleteBtn = ({id, items, setItems}) => {
     )
 }
 
-const MovableItem = ({name, setItems, dataType, result, setResult, movableClassName, setMovableClassName}) => {
+const MovableItem = ({name, setItems, dataType, setIsDataSlotEmpty, setIsFuncSlotEmpty, isFuncSlotEmpty, isDataSlotEmpty, movableClassName, setMovableClassName}) => {
 
     console.log(movableClassName)
     const changeItemColumn = (currentItem, columnName) => {
-        if (columnName === '함수 슬롯') {
-            setResult(eval(currentItem.name)(result))
-        } else if (columnName === '데이터 슬롯') {
-            setResult(currentItem.name)
-        }
 
         setItems((prevState) => {
             return prevState.map(e => {
@@ -55,9 +49,11 @@ const MovableItem = ({name, setItems, dataType, result, setResult, movableClassN
         end: (item, monitor) => {
             const dropResult = monitor.getDropResult();
 
-            if (dropResult && dropResult.name === "데이터 슬롯") {
+            if (dropResult && dropResult.name === "데이터 슬롯" && !isDataSlotEmpty) {
+                setIsDataSlotEmpty(item.name)
                 changeItemColumn(item, "데이터 슬롯")
-            } else if (dropResult && dropResult.name === "함수 슬롯") {
+            } else if (dropResult && dropResult.name === "함수 슬롯" && !isFuncSlotEmpty) {
+                setIsFuncSlotEmpty(item.name)
                 changeItemColumn(item, "함수 슬롯")
             }
         },
@@ -85,19 +81,19 @@ const Slot = ({items, setItems, title, children, className, dataType}) => {
         ),
     });
 
-    console.log(title, children.name)
+
     return (
         <div ref={drop} className={className}>
 
             {((children.length === 0 && (title === "데이터 슬롯" || title === "함수 슬롯")) ||
-                    (title === "결과 슬롯" && children.name === undefined) ||
+                    (title === "결과 슬롯" && children.name === " ") ||
                     (title === "Data Blocks" || title === "Function Blocks"))
                 && title}
 
             {((children.length === 1 && (title === "데이터 슬롯" || title === "함수 슬롯")) &&
                 (title !== "결과 슬롯") &&
                 (title !== "Data Blocks" || title !== "Function Blocks")) && <DeleteBtn id = {children.id} items={items} setItems={setItems}/>}
-
+            {console.log("--", children[0])}
             {children}
         </div>
     )
@@ -117,7 +113,8 @@ const reverse = (result) => {
 
 function App() {
     const [movableClassName, setMovableClassName] = useState("")
-    const [result, setResult] = useState('')
+    const [isDataSlotEmpty, setIsDataSlotEmpty] = useState('')
+    const [isFuncSlotEmpty, setIsFuncSlotEmpty] = useState('')
     const [items, setItems] = useState([
         {id: 1, name: "Smarter alone, Smartest together", column: "Data Blocks", type: "data"},
         {id: 2, name: "Make AI work for the rest of us", column: "Data Blocks", type: "data"},
@@ -128,24 +125,33 @@ function App() {
     ]);
 
     const returnItemsForSlot = (columnName, className) => {
-        {console.log(columnName, className)}
         return items
             .filter((item) => item.column === columnName)
             .map((item) => (
-                <MovableItem key={item.id} name={item.name} setItems={setItems} dataType={item.type}
-                             result={result} setResult={setResult} movableClassName={className} setMovableCalssName={setMovableClassName} />
+                <MovableItem key={item.id}
+                             name={item.name}
+                             setItems={setItems}
+                             dataType={item.type}
+                             setIsDataSlotEmpty={setIsDataSlotEmpty}
+                             isDataSlotEmpty={isDataSlotEmpty}
+                             setIsFuncSlotEmpty={setIsFuncSlotEmpty}
+                             isFuncSlotEmpty={isFuncSlotEmpty}
+                             movableClassName={className}
+                             setMovableCalssName={setMovableClassName} />
             ))
     }
 
     const runClick = () => {
-        setItems((prevState) => {
-            return prevState.map(e => {
-                return {
-                    ...e,
-                    name: e.id === 0 ? result : e.name,
-                }
-            })
-        });
+        if (isFuncSlotEmpty && isDataSlotEmpty) {
+            setItems((prevState) => {
+                return prevState.map(e => {
+                    return {
+                        ...e,
+                        name: e.id === 100 ? eval(isFuncSlotEmpty)(isDataSlotEmpty) : e.name,
+                    }
+                })
+            });
+        }
     }
 
     return (
